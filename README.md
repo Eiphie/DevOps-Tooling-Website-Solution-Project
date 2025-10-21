@@ -3,6 +3,8 @@ A DevOps Tooling Website Solution is a web-based platform or portal that uses in
 ## Project SetUp
 ### NFS Server Setup
 - Launch EC2 on Redhat
+
+Install gdisk utility tool
 ```
 sudo dnf install https://dl.fedoraproject.org/pub/epel/epel-release-latest-10.noarch.rpm
 ```
@@ -172,4 +174,73 @@ sudo systemctl restart httpd
 
 - Check that the Web Server's /var/www directory contains Apache files and directories and in /mnt/apps on the NFS server.  It indicates that NFS is mounted correctly if you see the same files, Try creating a new file called "touch test.txt" from one server and seeing if the same file is reachable from different web servers.
 
+### Forking
+Fork the tooling source code from StegHub GitHub Account to your GitHub account, It means you need to create your own copy of the tooling project’s repository (which belongs to “StegHub”) into your own GitHub account.
+- Forking lets you modify and deploy the code without changing the original author’s repository.
+- You’ll be able to clone, edit, and push code to your own version.
+- It’s essential if you’re going to deploy the website (like /var/www/html) or update configuration files such as functions.php.
 
+Step-by-step: How to fork a repo
+- Go to the original repository:Example: `https://github.com/StegHub/tooling`(this is the repo you’re supposed to fork)
+- Click the “Fork” button (top-right corner of the page).
+- Choose your GitHub account (where you want the fork to live).
+- GitHub will create a copy of the repository under your account, for example: `https://github.com/<your-username>/tooling`
+
+After forking: clone it to your EC2 instance
+```
+sudo dnf install git -y
+git clone https://github.com/<your-username>/tooling.git
+```
+Confirm that you have cloned the tooling 
+```
+ls
+ls tooling
+```
+Then deploy it to your web server:
+```
+sudo cp -r tooling/html /var/www/
+```
+Confirm that you have deployed tooling successgully 
+```
+ls /var/www/
+ls -la /var/www/html/
+```
+
+Connect the PHP website to your MySQL database properly.
+
+Edit the functions.php file
+```
+sudo vi /var/www/html/functions.php
+```
+Run the `tooling-db.sql` script
+```
+mysql -h 172.31.7.138 -u webaccess -p tooling < tooling/tooling-db.sql
+```
+Update permission to the /var/www/html directory
+```
+sudo setenforce 0
+sudo vi /etc/sysconfig/selinux
+sudo systemctl restart httpd
+```
+
+### Create an admin user in MySQL
+```
+mysql -u webaccess -p -h 172.31.7.138
+USE tooling;
+INSERT INTO users (id, username, password, email, user_type, status)
+VALUES (1, 'myuser', '5f4dcc3b5aa765d61d8327deb882cf99', 'user@mail.com', 'admin', '1');
+```
+
+- Confirm that it works
+```
+SELECT * FROM users;
+```
+- Open the website
+```
+http://<Web-Server-Public-IP-Address-or-Public-DNS-Name>/index.php
+```
+- Then log in using:
+```
+Username: myuser
+Password: password
+```
