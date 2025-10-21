@@ -1,6 +1,8 @@
 # DevOps Tooling Website Solution
 A DevOps Tooling Website Solution is a web-based platform or portal that uses integrated tools, dashboards, and workflows to assist teams in implementing, managing, and automating DevOps practices.
 ## Project SetUp
+<img width="1279" height="277" alt="Screenshot 2025-10-17 at 21 32 00" src="https://github.com/user-attachments/assets/7fc38516-3b6f-4672-b09b-8b87b2f367c7" />
+
 ### NFS Server Setup
 - Launch EC2 on Redhat
 
@@ -8,6 +10,9 @@ Install gdisk utility tool
 ```
 sudo dnf install https://dl.fedoraproject.org/pub/epel/epel-release-latest-10.noarch.rpm
 ```
+Attach 3 EBS volumes to the NFS instance
+<img width="1512" height="458" alt="Screenshot 2025-10-15 at 19 02 00" src="https://github.com/user-attachments/assets/21b2d6d4-17e5-4a8c-bbb6-ae5842875fd0" />
+
 ```
 sudo dnf install gdisk
 ```
@@ -55,6 +60,7 @@ sudo vgdisplay
 ```
 sudo lsblk
 ```
+<img width="772" height="887" alt="Screenshot 2025-10-15 at 19 19 33" src="https://github.com/user-attachments/assets/fce34987-634f-4876-9964-3f6295061b50" />
 
 Format all 3 LVs with xfs filesystem
 ```
@@ -62,6 +68,8 @@ sudo mkfs -t xfs /dev/nfs-vg/lv-apps
 sudo mkfs -t xfs /dev/nfs-vg/lv-logs
 sudo mkfs -t xfs /dev/nfs-vg/lv-opt
 ```
+<img width="653" height="531" alt="Screenshot 2025-10-15 at 19 22 35" src="https://github.com/user-attachments/assets/f8a6bd54-103c-42e3-9117-3c497ec8a13d" />
+
 ```
 ls /mnt
 find /mnt
@@ -73,6 +81,8 @@ sudo mkdir -p /mnt/apps
 sudo mkdir -p /mnt/logs
 sudo mkdir -p /mnt/opt
 ```
+<img width="572" height="104" alt="Screenshot 2025-10-15 at 19 35 02" src="https://github.com/user-attachments/assets/b9e73947-070d-463f-b009-0b34953fd475" />
+
 ```
 sudo mount /dev/nfs-vg/lv-apps /mnt/apps
 sudo mount /dev/nfs-vg/lv-logs /mnt/logs
@@ -118,6 +128,8 @@ sudo exportfs -arv
 ```
 rpcinfo -p | grep nfs
 ```
+<img width="1130" height="776" alt="Screenshot 2025-10-15 at 20 14 50" src="https://github.com/user-attachments/assets/8fd69081-05a5-43b2-8793-52504ba791e3" />
+
 
 ### Database Server Setup
 - Launch EC2 on Ubuntu
@@ -136,6 +148,7 @@ sudo vim /etc/mysql/mysql.conf.d/mysqld.cnf
 sudo systemctl restart mysql
 sudo mysql
 ```
+<img width="805" height="550" alt="Screenshot 2025-10-17 at 21 46 11" src="https://github.com/user-attachments/assets/ecb383e2-d995-4911-b5a8-6e45c8e484b9" />
 
 ### Web Servers Setup
 - Launch 3 EC2 on Redhat and set up the NFS client, then mount /var/www and aim for the apps' export from the NFS server.
@@ -153,6 +166,7 @@ Edit /etc/fstab and add the volume mount `<NFS-Server-Private-IP-Address>:/mnt/a
 ```
 sudo vi /etc/fstab
 ```
+<img width="682" height="71" alt="Screenshot 2025-10-18 at 22 39 57" src="https://github.com/user-attachments/assets/37243c0d-3211-4749-9ff3-04a68e1a5569" />
 
 Enter Apache, PHP, and Remi's repository for each of the three web servers that were created.
 ```
@@ -171,6 +185,8 @@ sudo systemctl enable php-fpm
 sudo setsebool -P httpd_execmem 1
 sudo systemctl restart httpd
 ```
+
+<img width="874" height="120" alt="Screenshot 2025-09-26 at 21 58 05" src="https://github.com/user-attachments/assets/90edde6e-8dad-4e28-ad39-62206b3eff98" />
 
 - Check that the Web Server's /var/www directory contains Apache files and directories and in /mnt/apps on the NFS server.  It indicates that NFS is mounted correctly if you see the same files, Try creating a new file called "touch test.txt" from one server and seeing if the same file is reachable from different web servers.
 
@@ -230,11 +246,14 @@ USE tooling;
 INSERT INTO users (id, username, password, email, user_type, status)
 VALUES (1, 'myuser', '5f4dcc3b5aa765d61d8327deb882cf99', 'user@mail.com', 'admin', '1');
 ```
+<img width="678" height="824" alt="Screenshot 2025-10-20 at 22 28 57" src="https://github.com/user-attachments/assets/fc35e2a8-f15f-4852-b10e-c4fd14c73f13" />
 
 - Confirm that it works
 ```
 SELECT * FROM users;
 ```
+<img width="1271" height="742" alt="Screenshot 2025-10-20 at 22 26 48" src="https://github.com/user-attachments/assets/a71cbc46-f7e8-4235-a532-d0f6fb5f6499" />
+
 - Open the website
 ```
 http://<Web-Server-Public-IP-Address-or-Public-DNS-Name>/index.php
@@ -244,3 +263,6 @@ http://<Web-Server-Public-IP-Address-or-Public-DNS-Name>/index.php
 Username: myuser
 Password: password
 ```
+<img width="1332" height="682" alt="Screenshot 2025-10-20 at 22 39 15" src="https://github.com/user-attachments/assets/94412094-acc9-4461-993d-a8b2d2009091" />
+<img width="1502" height="896" alt="Screenshot 2025-10-21 at 07 22 13" src="https://github.com/user-attachments/assets/f7530636-9b10-47cc-b413-f740a555a601" />
+
