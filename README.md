@@ -105,7 +105,7 @@ sudo systemctl status nfs-server.service
 - Update etc/fstab file with UUID of device, then test configuration and reload daemon
 ```
 sudo blkid
-sudo vi /etc/fsta
+sudo vi /etc/fstab
 sudo mount -a
 sudo systemctl daemon-reload
 ```
@@ -123,6 +123,7 @@ sudo chmod -R 777 /mnt/opt
 ```
 ```
 sudo vi /etc/exports
+/mnt/apps <Subnet-CIDR>(rw,sync,no_all_squash,no_root_squash)
 sudo exportfs -arv
 ```
 ```
